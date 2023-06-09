@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ac-sgyxco9-shard-00-00.shgh1ow.mongodb.net:27017,ac-sgyxco9-shard-00-01.shgh1ow.mongodb.net:27017,ac-sgyxco9-shard-00-02.shgh1ow.mongodb.net:27017/?ssl=true&replicaSet=atlas-b9z6n7-shard-0&authSource=admin&retryWrites=true&w=majority`;
 
@@ -50,13 +50,25 @@ async function run() {
       res.send(result);
     })
 
+    app.patch("user/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     //classes..................
     app.get("/classes", async (req, res) => {
       const result = await classCollection.find().toArray();
       res.send(result);
     });
 
-    
+
 
 
 
