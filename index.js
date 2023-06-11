@@ -58,10 +58,22 @@ async function run() {
       })
       res.send({token})
     })
-    
+
+    const verifyAdmin = async (req, res, next) => {
+      const email = req.decoded.email;
+      const query = { email: email }
+      const user = await usersCollection.findOne(query);
+      if (user?.role !== 'admin') {
+        return res.status(403).send({error: true, message: 'forbidden user'})
+      }
+      next();
+    }
+
+
+
     //users...................
 
-    app.get("/users", verifyJWT, async (req, res) => {
+    app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
@@ -100,7 +112,7 @@ async function run() {
       const result = { instructor: user?.role === 'instructor' };
       res.send(result);
     })
-    
+
     //student checking
     app.get('/users/student/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
@@ -109,7 +121,7 @@ async function run() {
       }
       const query = { email: email };
       const user = await usersCollection.findOne(query);
-      const result = { student: user?.role !== "admin" || user?.role !== 'instructor'};
+      const result = { student: user?.role !== "admin" && user?.role !== 'instructor'};
       res.send(result);
     })
 
