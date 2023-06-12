@@ -166,9 +166,19 @@ async function run() {
 
     //classes..................
     app.get("/classes", async (req, res) => {
-      const result = await classCollection.find().toArray();
+      const result = await classCollection
+        .find()
+        .sort({ createdAt: -1 })
+        .toArray();
       res.send(result);
     });
+
+    app.post('/classes', async (req, res) => {
+      const newClass = req.body;
+      newClass.createdAt = new Date();
+      const result = await classCollection.insertOne(newClass);
+      res.send(result);
+    })
 
 
 
