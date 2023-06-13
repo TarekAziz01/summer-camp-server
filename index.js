@@ -212,6 +212,12 @@ async function run() {
     })
 
     //cart--------------------
+
+    app.get('/carts', async (req, res) => {
+      const result = await cartCollection.find().sort({ createdAt: -1 }).toArray();
+      res.send(result)
+    })
+
     app.post('/carts', async (req, res) => {
       const newItem = req.body;
       newItem.createdAt = new Date();
