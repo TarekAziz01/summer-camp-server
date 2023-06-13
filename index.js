@@ -180,20 +180,20 @@ async function run() {
       res.send(result);
     })
 
-    app.patch("/classes/approve/:id", async (req, res) => {
+
+    app.patch('/classes/approved/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
+      const filter = { _id: new ObjectId(id) }
       const updateDoc = {
         $set: {
-          status: "approved",
+          status: 'approved',
         },
       };
-      const result = await usersCollection.updateOne(filter, updateDoc);
-      res.send(result);
-    });
+      const result = await classCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
 
-
-
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
