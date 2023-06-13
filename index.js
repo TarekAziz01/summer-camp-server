@@ -205,6 +205,12 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/classes/approved', async (req, res) => {
+      const query = { status: 'approved' };
+      const result = await classCollection.find(query).sort({ createdAt: -1 }).toArray()
+      res.send(result)
+    })
+
 
 
     // Send a ping to confirm a successful connection
