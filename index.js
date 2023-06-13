@@ -213,8 +213,9 @@ async function run() {
 
     //cart--------------------
 
-    app.get('/carts', async (req, res) => {
-      const result = await cartCollection.find().sort({ createdAt: -1 }).toArray();
+    app.get('/carts/booked', async (req, res) => {
+      const query = { state: "booked" };
+      const result = await cartCollection.find(query).sort({ createdAt: -1 }).toArray();
       res.send(result)
     })
 
@@ -224,6 +225,13 @@ async function run() {
       const result = await cartCollection.insertOne(newItem);
       res.send(result)
     })
+
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
 
 
 
