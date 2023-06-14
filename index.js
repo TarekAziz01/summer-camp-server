@@ -219,6 +219,14 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/carts/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id)
+      const query = { _id: new ObjectId(id) }
+      const result = await cartCollection.findOne(query);
+      res.send(result)
+    })
+
     app.post('/carts', async (req, res) => {
       const newItem = req.body;
       newItem.createdAt = new Date();
