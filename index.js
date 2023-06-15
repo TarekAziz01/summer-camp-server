@@ -50,6 +50,7 @@ async function run() {
     const classCollection = client.db("summerDb").collection("classes");
     const cartCollection = client.db("summerDb").collection("carts");
     const paymentCollection = client.db("summerDb").collection("payments");
+    const enrollCollection = client.db("summerDb").collection("enrolls");
 
 
 
@@ -236,6 +237,18 @@ async function run() {
       res.send(result)
     })
 
+    app.patch('/carts/enrolled/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updateDoc = {
+        $set: {
+          state: "enrolled",
+        },
+      };
+      const result = await cartCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
     app.delete("/carts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -263,7 +276,14 @@ async function run() {
       const result = await paymentCollection.insertOne(payment)
       res.send(result);
     })
-
+    //enrolled---------
+    app.post('/enrolled', async (req, res) => {
+      const newEnrolled = req.body;
+      newEnrolled.createdAt = new Date();
+      const result = await enrollCollection.insertOne(newEnrolled)
+      res.send(result);
+    })
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
