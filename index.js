@@ -49,6 +49,7 @@ async function run() {
     const usersCollection = client.db("summerDb").collection("users");
     const classCollection = client.db("summerDb").collection("classes");
     const cartCollection = client.db("summerDb").collection("carts");
+    const paymentCollection = client.db("summerDb").collection("payments");
 
 
 
@@ -242,7 +243,8 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/create-payment-intent", async (req, res) => {
+    //Create payment intent
+    app.post("/create-payment-intent", verifyJWT, async (req, res) => {
       const { price } = req.body;
       const amount = price * 100;
       const paymentIntent = await stripe.paymentIntents.create({
@@ -255,7 +257,12 @@ async function run() {
       });
     })
 
-
+    //payment---------
+    app.post('/payments',verifyJWT, async (req, res) => {
+      const payment = req.body;
+      const result = await paymentCollection.insertOne(payment)
+      res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
