@@ -86,6 +86,14 @@ async function run() {
       res.send(result);
     });
 
+    //------------------------
+    app.get("/users/instructors", async (req, res) => {
+      const filter = { role: 'instructor' }
+      const result = await usersCollection.find(filter).toArray();
+      res.send(result,)
+    })
+    //---------------------------
+
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -242,7 +250,6 @@ async function run() {
       const result = await cartCollection.insertOne(newItem);
       res.send(result);
     });
-    //------------------
 
     app.patch("/carts/enrolled/:id", async (req, res) => {
       const id = req.params.id;
@@ -283,13 +290,14 @@ async function run() {
       const result = await paymentCollection.insertOne(payment);
       res.send(result);
     });
+
     //enrolled---------
 
-    app.get("/enrolled", async (req, res) => {
-      const result = await enrollCollection
-        .find()
-        .sort({ createdAt: -1 })
-        .toArray();
+    app.get("/enrolled/:email",verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { email: email };
+      const result = await enrollCollection.find(query).sort({ createdAt: -1 }).toArray();
       res.send(result);
     });
 
