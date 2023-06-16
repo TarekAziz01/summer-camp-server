@@ -183,7 +183,7 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/classes", async (req, res) => {
+    app.post("/classes", verifyInstructor, async (req, res) => {
       const newClass = req.body;
       newClass.createdAt = new Date();
       const result = await classCollection.insertOne(newClass);
