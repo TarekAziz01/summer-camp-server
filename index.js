@@ -201,7 +201,27 @@ async function run() {
       const result = await classCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+    //-----------------------
+    //-----------------------
+    
+    app.patch("/classes/enrol/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const data = await classCollection.findOne(filter)
+      if (data) {
+        const updateDoc = {
+        $set: {
+          availableSeat: data.availableSeat - 1,
+          enrol : data.enrol,
+        },
+        };
+        const result = await classCollection.updateOne(filter, updateDoc);
+        res.send(result);
+      }
 
+    });
+    //------------------------
+    //------------------------
     app.patch("/classes/deny/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
